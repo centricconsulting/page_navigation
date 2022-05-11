@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class FirstPage
@@ -13,11 +15,13 @@ class TestNavigator
   include PageNavigation
   attr_accessor :current_page
 
-  def on(cls) #placeholder for PageFactory's on_page (alias 'on')
+  # placeholder for PageFactory's on_page (alias 'on')
+  def on(cls)
     cls.new
   end
 
-  def visit(cls) #placeholder for PageFactory's visit_page (alias 'visit')
+  # placeholder for PageFactory's visit_page (alias 'visit')
+  def visit(cls)
     page_instance = cls.new
     page_instance.visit
     page_instance
@@ -37,23 +41,23 @@ describe PageNavigation do
   end
 
   it 'should raise an error when you do not provide a default route' do
-    expect { TestNavigator.routes = {:another => []} }.to raise_error 'You must provide a :default route'
+    expect { TestNavigator.routes = { another: [] } }.to raise_error 'You must provide a :default route'
   end
 
   it 'should store the routes' do
-    routes = %w(a b c)
-    TestNavigator.routes = {:default => routes}
+    routes = %w[a b c]
+    TestNavigator.routes = { default: routes }
     expect(TestNavigator.routes[:default]).to be routes
   end
 
   it 'should store route data' do
-    TestNavigator.route_data = {:default => :blah}
-    expect(TestNavigator.route_data).to eq ({:default => :blah})
+    TestNavigator.route_data = { default: :blah }
+    expect(TestNavigator.route_data).to eq({ default: :blah })
   end
 
   it 'should navigate to a page calling the default methods' do
     pages = [[FirstPage, :a_method], [MiddlePage, :b_method]]
-    TestNavigator.routes = {:default => pages}
+    TestNavigator.routes = { default: pages }
     fake_page = double('middle_page')
     expect(FirstPage).to receive(:new).and_return(fake_page)
     expect(fake_page).to receive(:a_method)
@@ -62,8 +66,8 @@ describe PageNavigation do
 
   it 'should load the DataMagic file when specified' do
     pages = [[FirstPage, :a_method], [MiddlePage, :b_method]]
-    TestNavigator.routes = {:default => pages}
-    TestNavigator.route_data = {:default => :dm_file}
+    TestNavigator.routes = { default: pages }
+    TestNavigator.route_data = { default: :dm_file }
     fake_page = double('middle_page')
     expect(FirstPage).to receive(:new).and_return(fake_page)
     expect(fake_page).to receive(:a_method)
@@ -73,7 +77,7 @@ describe PageNavigation do
 
   it 'should pass parameters to methods when navigating' do
     pages = [[FirstPage, :a_method, 'blah'], [MiddlePage, :b_method]]
-    TestNavigator.routes = {:default => pages}
+    TestNavigator.routes = { default: pages }
     fake_page = double('middle_page')
     expect(FirstPage).to receive(:new).and_return(fake_page)
     expect(fake_page).to receive(:a_method).with('blah')
@@ -81,13 +85,13 @@ describe PageNavigation do
   end
 
   it 'should fail when it does not find a proper route' do
-    TestNavigator.routes = {:default => ['a'], :another => ['b']}
-    expect { @navigator.navigate_to(MiddlePage, :using => :no_route) }.to raise_error
+    TestNavigator.routes = { default: ['a'], another: ['b'] }
+    expect { @navigator.navigate_to(MiddlePage, using: :no_route) }.to raise_error
   end
 
   it 'should fail when no default method specified' do
     TestNavigator.routes = {
-      :default => [[FirstPage, :a_method], [MiddlePage, :b_method]]
+      default: [[FirstPage, :a_method], [MiddlePage, :b_method]]
     }
     fake_page = double('middle_page')
     expect(FirstPage).to receive(:new).and_return(fake_page)
@@ -99,7 +103,7 @@ describe PageNavigation do
     first_page, middle_page, last_page = mock_common_method_calls
 
     @navigator.current_page = FirstPage.new
-    
+
     expect(first_page).to receive(:a_method)
     expect(middle_page).to receive(:b_method)
 
@@ -133,7 +137,7 @@ describe PageNavigation do
     expect(first_page).not_to receive(:a_method)
     expect(middle_page).to receive(:b_method)
 
-    @navigator.navigate_to(LastPage, :from => MiddlePage)
+    @navigator.navigate_to(LastPage, from: MiddlePage)
   end
 
   it 'should visit page at start of route given visit param set to true' do
@@ -183,12 +187,12 @@ end
 
 def mock_common_method_calls
   TestNavigator.routes = {
-      :default => [[FirstPage, :a_method],
-                   [MiddlePage, :b_method],
-                   [LastPage, :c_method]],
-      :alt => [[FirstPage, :x_method],
-               [MiddlePage, :y_method],
-               [LastPage, :z_method]]
+    default: [[FirstPage, :a_method],
+              [MiddlePage, :b_method],
+              [LastPage, :c_method]],
+    alt: [[FirstPage, :x_method],
+          [MiddlePage, :y_method],
+          [LastPage, :z_method]]
   }
 
   first_page = FirstPage.new
@@ -206,5 +210,5 @@ def mock_common_method_calls
   allow(last_page).to receive(:respond_to?).with(:visit).and_return(true)
   allow(last_page).to receive(:respond_to?).with(:c_method).and_return(true)
 
-  return first_page, middle_page, last_page
+  [first_page, middle_page, last_page]
 end

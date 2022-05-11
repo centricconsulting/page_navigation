@@ -6,7 +6,7 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'page_navigation'
+    gem 'centric_page_navigation'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install page_navigation
+    $ gem install centric_page_navigation
 
 ## Usage
 

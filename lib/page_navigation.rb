@@ -1,5 +1,5 @@
-require "page_navigation/version"
-require "page_navigation/routes"
+require 'page_navigation/version'
+require 'page_navigation/routes'
 require 'data_magic'
 
 #
